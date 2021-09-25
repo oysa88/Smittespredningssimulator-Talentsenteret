@@ -26,11 +26,6 @@ function Bevegelse () {
         LegeListSPRITE.y = LegeListSPRITE.y + randint(-10, 10)
         LegeListSPRITE.setStayInScreen(true)
     }
-    for (let VaksinatorListSPRITE of VaksinatorLIST) {
-        VaksinatorListSPRITE.x = VaksinatorListSPRITE.x + randint(-10, 10)
-        VaksinatorListSPRITE.y = VaksinatorListSPRITE.y + randint(-10, 10)
-        VaksinatorListSPRITE.setStayInScreen(true)
-    }
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     antallFriske = FriskLIST.length
@@ -67,14 +62,14 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function Syke () {
-    for (let FriskListSPRITE2 of FriskLIST) {
-        for (let SykListSPRITE2 of SykLIST) {
+    for (let FriskListSPRITE of FriskLIST) {
+        for (let SykListSPRITE of SykLIST) {
             tilfeldigTallSyk = randint(0, 100)
-            if (FriskListSPRITE2.overlapsWith(SykListSPRITE2)) {
+            if (FriskListSPRITE.overlapsWith(SykListSPRITE)) {
                 if (tilfeldigTallSyk < prosentSmitte) {
-                    FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE2))
-                    FriskListSPRITE2.destroy()
-                    FriskListSPRITE2 = sprites.create(img`
+                    FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE))
+                    FriskListSPRITE.destroy()
+                    FriskListSPRITE = sprites.create(img`
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -92,8 +87,8 @@ function Syke () {
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         `, SpriteKind.Syk)
-                    FriskListSPRITE2.setPosition(SykListSPRITE2.x, SykListSPRITE2.y)
-                    SykLIST.push(FriskListSPRITE2)
+                    FriskListSPRITE.setPosition(SykListSPRITE.x, SykListSPRITE.y)
+                    SykLIST.push(FriskListSPRITE)
                     info.changeScoreBy(1)
                 }
             }
@@ -127,14 +122,27 @@ function Doktor () {
         L_Lege.setPosition(randint(0, ScreenWidth), randint(0, ScreenHight))
         LegeLIST.push(L_Lege)
     }
-    for (let SykListSPRITE3 of SykLIST) {
-        for (let LegeListSPRITE2 of LegeLIST) {
+    if (vaksineActive) {
+        for (let FriskListSPRITE of FriskLIST) {
+            for (let LegeListSPRITE of LegeLIST) {
+                if (FriskListSPRITE.overlapsWith(LegeListSPRITE)) {
+                    FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE))
+                    FriskListSPRITE.destroy()
+                    FriskListSPRITE = sprites.create(assets.image`Syk`, SpriteKind.Imun)
+                    FriskListSPRITE.setPosition(LegeListSPRITE.x, LegeListSPRITE.y)
+                    VaksineLIST.push(FriskListSPRITE)
+                }
+            }
+        }
+    }
+    for (let SykListSPRITE of SykLIST) {
+        for (let LegeListSPRITE of LegeLIST) {
             tilfeldigTallFrisk = randint(0, 100)
-            if (SykListSPRITE3.overlapsWith(LegeListSPRITE2)) {
+            if (SykListSPRITE.overlapsWith(LegeListSPRITE)) {
                 if (tilfeldigTallFrisk < prosentBliFrisk) {
-                    SykLIST.removeAt(SykLIST.indexOf(SykListSPRITE3))
-                    SykListSPRITE3.destroy()
-                    SykListSPRITE3 = sprites.create(img`
+                    SykLIST.removeAt(SykLIST.indexOf(SykListSPRITE))
+                    SykListSPRITE.destroy()
+                    SykListSPRITE = sprites.create(img`
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -152,21 +160,8 @@ function Doktor () {
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         `, SpriteKind.Frisk)
-                    SykListSPRITE3.setPosition(LegeListSPRITE2.x, LegeListSPRITE2.y)
-                    FriskLIST.push(SykListSPRITE3)
-                }
-            }
-        }
-    }
-    if (vaksineActive) {
-        for (let FriskListSPRITE4 of FriskLIST) {
-            for (let LegeListSPRITE3 of LegeLIST) {
-                if (FriskListSPRITE4.overlapsWith(LegeListSPRITE3)) {
-                    FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE4))
-                    FriskListSPRITE4.destroy()
-                    FriskListSPRITE4 = sprites.create(assets.image`Syk`, SpriteKind.Imun)
-                    FriskListSPRITE4.setPosition(LegeListSPRITE3.x, LegeListSPRITE3.y)
-                    VaksineLIST.push(FriskListSPRITE4)
+                    SykListSPRITE.setPosition(LegeListSPRITE.x, LegeListSPRITE.y)
+                    FriskLIST.push(SykListSPRITE)
                 }
             }
         }
@@ -182,7 +177,6 @@ let F_Frisk: Sprite = null
 let vaksineActive = false
 let legeActive = false
 let LegeLIST: Sprite[] = []
-let VaksinatorLIST: Sprite[] = []
 let VaksineLIST: Sprite[] = []
 let FriskLIST: Sprite[] = []
 let SykLIST: Sprite[] = []
@@ -193,12 +187,11 @@ let ScreenWidth = 0
 ScreenWidth = scene.screenWidth()
 ScreenHight = scene.screenHeight()
 tiles.setWallAt(tiles.getTileLocation(scene.screenHeight(), scene.screenWidth()), true)
-prosentSmitte = game.askForNumber("Sett prosent sannsynlig for å bli smittet:", 2)
-prosentBliFrisk = game.askForNumber("Sett prosent sannsynlig for å bli frisk:", 2)
+prosentSmitte = 70
+prosentBliFrisk = 95
 SykLIST = sprites.allOfKind(SpriteKind.Syk)
 FriskLIST = sprites.allOfKind(SpriteKind.Frisk)
 VaksineLIST = sprites.allOfKind(SpriteKind.Imun)
-VaksinatorLIST = sprites.allOfKind(SpriteKind.Vaksinator)
 LegeLIST = sprites.allOfKind(SpriteKind.Lege)
 legeActive = false
 vaksineActive = false
@@ -234,5 +227,5 @@ forever(function () {
     Bevegelse()
     Syke()
     Doktor()
-    pause(100)
+    pause(500)
 })
