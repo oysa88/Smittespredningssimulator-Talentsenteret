@@ -523,16 +523,16 @@ function Doktor () {
         }
     }
     // Funksjon for å helbrede en syk sprite
-    for (let VaksinertSykListSPRITE of VaksinertSykLIST) {
-        for (let LegeListSPRITE3 of LegeLIST) {
+    for (let VaksinertSykListSPRITE2 of VaksinertSykLIST) {
+        for (let LegeListSPRITE32 of LegeLIST) {
             tilfeldigTallFrisk = randint(0, 100)
-            if (VaksinertSykListSPRITE.overlapsWith(VaksinertSykListSPRITE)) {
+            if (VaksinertSykListSPRITE2.overlapsWith(VaksinertSykListSPRITE2)) {
                 // Sjekker om pasienten kan bli frisk igjen
                 // Pasienter som ikke blir friske igjen, dør
                 if (tilfeldigTallFrisk <= prosentImunBliSyk) {
-                    VaksinertSykLIST.removeAt(VaksinertSykLIST.indexOf(VaksinertSykListSPRITE))
-                    VaksinertSykListSPRITE.destroy()
-                    VaksinertSykListSPRITE = sprites.create(img`
+                    VaksinertSykLIST.removeAt(VaksinertSykLIST.indexOf(VaksinertSykListSPRITE2))
+                    VaksinertSykListSPRITE2.destroy()
+                    VaksinertSykListSPRITE2 = sprites.create(img`
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -550,12 +550,12 @@ function Doktor () {
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         `, SpriteKind.Imun)
-                    VaksinertSykListSPRITE.setPosition(LegeListSPRITE3.x, LegeListSPRITE3.y)
-                    VaksineLIST.push(VaksinertSykListSPRITE)
+                    VaksinertSykListSPRITE2.setPosition(LegeListSPRITE32.x, LegeListSPRITE32.y)
+                    VaksineLIST.push(VaksinertSykListSPRITE2)
                 } else {
-                    VaksinertSykLIST.removeAt(VaksinertSykLIST.indexOf(VaksinertSykListSPRITE))
-                    VaksinertSykListSPRITE.destroy()
-                    VaksinertSykListSPRITE = sprites.create(img`
+                    VaksinertSykLIST.removeAt(VaksinertSykLIST.indexOf(VaksinertSykListSPRITE2))
+                    VaksinertSykListSPRITE2.destroy()
+                    VaksinertSykListSPRITE2 = sprites.create(img`
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -573,12 +573,14 @@ function Doktor () {
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         `, SpriteKind.Død)
-                    DødLIST.push(VaksinertSykListSPRITE)
+                    DødLIST.push(VaksinertSykListSPRITE2)
                 }
             }
         }
     }
 }
+let antallSprites = 0
+let Flokkimunitet = 0
 let Dag = 0
 let legeAktivering = false
 let sisteLegeTid = 0
@@ -745,7 +747,7 @@ forever(function () {
             game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
             game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
             game.over(false)
-        } else if (antallFriske == 0 && antallDøde < 15) {
+        } else if (Flokkimunitet >= 0.9 && antallDøde < 15) {
             game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
             game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
             game.over(true)
@@ -763,4 +765,6 @@ forever(function () {
     antallImune = VaksineLIST.length
     antallLeger = LegeLIST.length
     antallDøde = DødLIST.length
+    antallSprites = antallFriske + antallSyke + antallImune
+    Flokkimunitet = antallImune / antallSprites
 })
