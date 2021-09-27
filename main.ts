@@ -5,6 +5,7 @@ namespace SpriteKind {
     export const Lege = SpriteKind.create()
     export const Vaksinator = SpriteKind.create()
     export const Død = SpriteKind.create()
+    export const VaksineSyk = SpriteKind.create()
 }
 // Bestemme bevegelsene til de forskjellige spritene
 function Bevegelse () {
@@ -25,6 +26,12 @@ function Bevegelse () {
         VaksineListSPRITE.x = VaksineListSPRITE.x + randint(hastighetVaksinert * -1, hastighetVaksinert)
         VaksineListSPRITE.y = VaksineListSPRITE.y + randint(hastighetVaksinert * -1, hastighetVaksinert)
         VaksineListSPRITE.setStayInScreen(true)
+    }
+    // Sette opp bevegelsene til syk og vaksinert sprites
+    for (let VaksinertSykListSPRITE of VaksinertSykLIST) {
+        VaksinertSykListSPRITE.x = VaksinertSykListSPRITE.x + randint(hastighetSyke * -1, hastighetSyke)
+        VaksinertSykListSPRITE.y = VaksinertSykListSPRITE.y + randint(hastighetSyke * -1, hastighetSyke)
+        VaksinertSykListSPRITE.setStayInScreen(true)
     }
     // Sette opp bevegelsene til lege sprites
     for (let LegeListSPRITE of LegeLIST) {
@@ -110,7 +117,7 @@ function Imunitet () {
                         . . . . . . . . . . . . . . . . 
                         `, SpriteKind.Syk)
                     VaksineListSPRITE2.setPosition(SykListSPRITE2.x, SykListSPRITE2.y)
-                    SykLIST.push(VaksineListSPRITE2)
+                    VaksinertSykLIST.push(VaksineListSPRITE2)
                 }
             }
         }
@@ -503,6 +510,62 @@ function Doktor () {
             }
         }
     }
+    // Funksjon for å helbrede en syk sprite
+    for (let VaksinertSykListSPRITE of VaksinertSykLIST) {
+        for (let LegeListSPRITE3 of LegeLIST) {
+            tilfeldigTallFrisk = randint(0, 100)
+            if (VaksinertSykListSPRITE.overlapsWith(VaksinertSykListSPRITE)) {
+                // Sjekker om pasienten kan bli frisk igjen
+                // Pasienter som ikke blir friske igjen, dør
+                if (tilfeldigTallFrisk <= prosentImunBliSyk) {
+                    VaksinertSykLIST.removeAt(VaksinertSykLIST.indexOf(VaksinertSykListSPRITE))
+                    VaksinertSykListSPRITE.destroy()
+                    VaksinertSykListSPRITE = sprites.create(img`
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . 9 9 9 . . . . . . . . . . 
+                        . . . 9 9 9 . . . . . . . . . . 
+                        . . . 9 9 9 . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        `, SpriteKind.Imun)
+                    VaksinertSykListSPRITE.setPosition(LegeListSPRITE3.x, LegeListSPRITE3.y)
+                    VaksineLIST.push(VaksinertSykListSPRITE)
+                } else {
+                    VaksinertSykLIST.removeAt(VaksinertSykLIST.indexOf(VaksinertSykListSPRITE))
+                    VaksinertSykListSPRITE.destroy()
+                    VaksinertSykListSPRITE = sprites.create(img`
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . 1 f 1 . . . . . . . . . . 
+                        . . . f f f . . . . . . . . . . 
+                        . . . 1 f 1 . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        `, SpriteKind.Død)
+                    DødLIST.push(VaksinertSykListSPRITE)
+                }
+            }
+        }
+    }
 }
 let Dag = 0
 let legeAktivering = false
@@ -533,6 +596,7 @@ let vaksineActive = false
 let legeAktiv = false
 let DødLIST: Sprite[] = []
 let LegeLIST: Sprite[] = []
+let VaksinertSykLIST: Sprite[] = []
 let VaksineLIST: Sprite[] = []
 let FriskLIST: Sprite[] = []
 let SykLIST: Sprite[] = []
@@ -583,10 +647,13 @@ prosentSmitte = 60
 // Sannsynlighet for å bli frisk igjen
 prosentBliFrisk = 95
 // Sannsynlighet for å bli syk hvis man er vaksinert
-prosentImunBliSyk = 23
+prosentImunBliSyk = 2
+// Sannsynlighet for å bli frisk igjen hvis man er vaksine
+let prosentImunBliFrisk = 99
 SykLIST = sprites.allOfKind(SpriteKind.Syk)
 FriskLIST = sprites.allOfKind(SpriteKind.Frisk)
 VaksineLIST = sprites.allOfKind(SpriteKind.Imun)
+VaksinertSykLIST = sprites.allOfKind(SpriteKind.VaksineSyk)
 LegeLIST = sprites.allOfKind(SpriteKind.Lege)
 DødLIST = sprites.allOfKind(SpriteKind.Død)
 legeAktiv = false
@@ -655,9 +722,11 @@ forever(function () {
     if (Dager > 15) {
         if (antallDøde >= 15) {
             game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
+            game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
             game.over(false)
         } else if (antallFriske == 0 && antallDøde < 15) {
             game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
+            game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
             game.over(true)
         }
     }
