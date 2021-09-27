@@ -96,10 +96,10 @@ function Syke () {
     }
 }
 function Doktor () {
-    if (info.score() >= 30 && !(vaksineActive)) {
+    if (info.score() >= Vaksineutviklingstid && !(vaksineActive)) {
         vaksineActive = true
     }
-    if (info.score() >= 15 && !(legeActive)) {
+    if (info.score() >= LegeDelay && !(legeActive)) {
         legeActive = true
         L_Lege = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -182,10 +182,14 @@ let FriskLIST: Sprite[] = []
 let SykLIST: Sprite[] = []
 let prosentBliFrisk = 0
 let prosentSmitte = 0
+let Vaksineutviklingstid = 0
+let LegeDelay = 0
 let ScreenHight = 0
 let ScreenWidth = 0
 ScreenWidth = scene.screenWidth()
 ScreenHight = scene.screenHeight()
+LegeDelay = 10
+Vaksineutviklingstid = 25
 tiles.setWallAt(tiles.getTileLocation(scene.screenHeight(), scene.screenWidth()), true)
 prosentSmitte = 70
 prosentBliFrisk = 95
