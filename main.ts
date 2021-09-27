@@ -6,28 +6,68 @@ namespace SpriteKind {
     export const Vaksinator = SpriteKind.create()
     export const Død = SpriteKind.create()
 }
+// Bestemme bevegelsene til de forskjellige spritene
 function Bevegelse () {
+    // Sette opp bevegelsene til friske sprites
     for (let FriskListSPRITE of FriskLIST) {
         FriskListSPRITE.x = FriskListSPRITE.x + randint(hastighetFriske * -1, hastighetFriske)
         FriskListSPRITE.y = FriskListSPRITE.y + randint(hastighetFriske * -1, hastighetFriske)
         FriskListSPRITE.setStayInScreen(true)
     }
+    // Sette opp bevegelsene til syke sprites
     for (let SykListSPRITE of SykLIST) {
         SykListSPRITE.x = SykListSPRITE.x + randint(hastighetSyke * -1, hastighetSyke)
         SykListSPRITE.y = SykListSPRITE.y + randint(hastighetSyke * -1, hastighetSyke)
         SykListSPRITE.setStayInScreen(true)
     }
+    // Sette opp bevegelsene til vaksinerte sprites
     for (let VaksineListSPRITE of VaksineLIST) {
         VaksineListSPRITE.x = VaksineListSPRITE.x + randint(hastighetVaksinert * -1, hastighetVaksinert)
         VaksineListSPRITE.y = VaksineListSPRITE.y + randint(hastighetVaksinert * -1, hastighetVaksinert)
         VaksineListSPRITE.setStayInScreen(true)
     }
+    // Sette opp bevegelsene til lege sprites
     for (let LegeListSPRITE of LegeLIST) {
         LegeListSPRITE.x = LegeListSPRITE.x + randint(hastighetLege * -1, hastighetLege)
         LegeListSPRITE.y = LegeListSPRITE.y + randint(hastighetLege * -1, hastighetLege)
         LegeListSPRITE.setStayInScreen(true)
     }
 }
+// Her gjøres friske sprite om til syke
+function Sykdom () {
+    for (let FriskListSPRITE23 of FriskLIST) {
+        for (let SykListSPRITE23 of SykLIST) {
+            tilfeldigTallSyk = randint(0, 100)
+            if (FriskListSPRITE23.overlapsWith(SykListSPRITE23)) {
+                if (tilfeldigTallSyk < prosentSmitte) {
+                    FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE23))
+                    FriskListSPRITE23.destroy()
+                    FriskListSPRITE23 = sprites.create(img`
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . 2 2 2 . . . . . . . . . . 
+                        . . . 2 2 2 . . . . . . . . . . 
+                        . . . 2 2 2 . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        `, SpriteKind.Syk)
+                    FriskListSPRITE23.setPosition(SykListSPRITE23.x, SykListSPRITE23.y)
+                    SykLIST.push(FriskListSPRITE23)
+                }
+            }
+        }
+    }
+}
+// Endre mutasjon nr. oppover med opp-knappen
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mutasjon > 6) {
         mutasjon = 6
@@ -35,10 +75,48 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         mutasjon += 1
     }
 })
+// Vise oversikt over de forskjellige spritene
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     game.splash("Friske:" + antallFriske, "Syke:" + antallSyke)
     game.splash("Imune:" + antallImune, "Døde:" + antallDøde)
+    game.splash("Leger:" + antallLeger)
 })
+// Her bestemmes hva som skjer med imune sprite
+function Imunitet () {
+    for (let VaksineListSPRITE2 of VaksineLIST) {
+        for (let SykListSPRITE2 of SykLIST) {
+            tilfeldigTallFrisk = randint(0, 100)
+            if (SykListSPRITE2.overlapsWith(VaksineListSPRITE2)) {
+                // Sjekker om en imun person blir smittet eller ikke
+                if (tilfeldigTallFrisk < prosentImunBliSyk) {
+                    VaksineLIST.removeAt(VaksineLIST.indexOf(VaksineListSPRITE2))
+                    VaksineListSPRITE2.destroy()
+                    VaksineListSPRITE2 = sprites.create(img`
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . 2 2 2 . . . . . . . . . . 
+                        . . . 2 2 2 . . . . . . . . . . 
+                        . . . 2 2 2 . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        `, SpriteKind.Syk)
+                    VaksineListSPRITE2.setPosition(SykListSPRITE2.x, SykListSPRITE2.y)
+                    SykLIST.push(VaksineListSPRITE2)
+                }
+            }
+        }
+    }
+}
+// Legg til en frisk sprite og en lege hvis mulig
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     F_Frisk = sprites.create(assets.image`Frisk`, SpriteKind.Frisk)
     F_Frisk.setPosition(randint(0, 160), randint(0, 120))
@@ -66,35 +144,53 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         LegeLIST.push(L_Lege)
     }
 })
+// Bestemme sannsynligheten for å bli smittet og frisk igjen for mutasjonene
 function SetupMutasjon () {
+    // Sannsynlighet for å bli frisk av mutasjon nr. 1
     FriskM1 = 95
+    // Sannsynlighet for å bli smittet av mutasjon nr. 1
     SmitteM1 = 87
+    // Sannsynlighet for å bli frisk av mutasjon nr. 2
     FriskM2 = 77
+    // Sannsynlighet for å bli smittet av mutasjon nr. 2
     SmitteM2 = 65
+    // Sannsynlighet for å bli frisk av mutasjon nr. 3
     FriskM3 = 89
+    // Sannsynlighet for å bli smittet av mutasjon nr. 3
     SmitteM3 = 88
+    // Sannsynlighet for å bli frisk av mutasjon nr. 4
     FriskM4 = 98
+    // Sannsynlighet for å bli smittet av mutasjon nr. 4
     SmitteM4 = 88
-    FriskM5 = 56
+    // Sannsynlighet for å bli frisk av mutasjon nr. 5
+    FriskM5 = 54
+    // Sannsynlighet for å bli smittet av mutasjon nr. 5
     SmitteM5 = 82
+    // Sannsynlighet for å bli frisk av mutasjon nr. 6
     FriskM6 = 94
+    // Sannsynlighet for å bli smittet av mutasjon nr. 6
     SmitteM6 = 56
 }
+// Endre mutasjon nr. nedover med ned-knappen
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (mutasjon < 1) {
-        mutasjon = 1
+    if (mutasjon < 0) {
+        mutasjon = 0
     } else {
         mutasjon += -1
     }
 })
+// Bestemme hvilken mutasjon som viruset skal ha
 function Mutasjoner () {
     if (mutasjon == 1) {
+        // Sette sannsynlighet for å bli smittet til å være M1
         prosentSmitte = SmitteM1
+        // Sette sannsynlighet for å bli frisk av mutasjon M1
         prosentBliFrisk = FriskM1
         for (let FriskListSPRITE2 of FriskLIST) {
-            for (let SykListSPRITE2 of SykLIST) {
+            for (let SykListSPRITE22 of SykLIST) {
                 tilfeldigTallSyk = randint(0, 100)
-                if (FriskListSPRITE2.overlapsWith(SykListSPRITE2)) {
+                if (FriskListSPRITE2.overlapsWith(SykListSPRITE22)) {
+                    // Sjekker om frisk sprite blir syk
                     if (tilfeldigTallSyk < prosentSmitte) {
                         FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE2))
                         FriskListSPRITE2.destroy()
@@ -116,19 +212,21 @@ function Mutasjoner () {
                             . . . . . . . . . . . . . . . . 
                             . . . . . . . . . . . . . . . . 
                             `, SpriteKind.Syk)
-                        FriskListSPRITE2.setPosition(SykListSPRITE2.x, SykListSPRITE2.y)
+                        FriskListSPRITE2.setPosition(SykListSPRITE22.x, SykListSPRITE22.y)
                         SykLIST.push(FriskListSPRITE2)
                     }
                 }
             }
         }
     } else if (mutasjon == 2) {
+        // Sette sannsynlighet for å bli smittet til å være M2
         prosentSmitte = SmitteM2
+        // Sette sannsynlighet for å bli frisk av mutasjon M2
         prosentBliFrisk = FriskM2
         for (let FriskListSPRITE22 of FriskLIST) {
-            for (let SykListSPRITE22 of SykLIST) {
+            for (let SykListSPRITE222 of SykLIST) {
                 tilfeldigTallSyk = randint(0, 100)
-                if (FriskListSPRITE22.overlapsWith(SykListSPRITE22)) {
+                if (FriskListSPRITE22.overlapsWith(SykListSPRITE222)) {
                     if (tilfeldigTallSyk < prosentSmitte) {
                         FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE22))
                         FriskListSPRITE22.destroy()
@@ -150,23 +248,25 @@ function Mutasjoner () {
                             . . . . . . . . . . . . . . . . 
                             . . . . . . . . . . . . . . . . 
                             `, SpriteKind.Syk)
-                        FriskListSPRITE22.setPosition(SykListSPRITE22.x, SykListSPRITE22.y)
+                        FriskListSPRITE22.setPosition(SykListSPRITE222.x, SykListSPRITE222.y)
                         SykLIST.push(FriskListSPRITE22)
                     }
                 }
             }
         }
     } else if (mutasjon == 3) {
+        // Sette sannsynlighet for å bli smittet til å være M3
         prosentSmitte = SmitteM3
+        // Sette sannsynlighet for å bli frisk av mutasjon M3
         prosentBliFrisk = FriskM3
-        for (let FriskListSPRITE23 of FriskLIST) {
-            for (let SykListSPRITE23 of SykLIST) {
+        for (let FriskListSPRITE232 of FriskLIST) {
+            for (let SykListSPRITE232 of SykLIST) {
                 tilfeldigTallSyk = randint(0, 100)
-                if (FriskListSPRITE23.overlapsWith(SykListSPRITE23)) {
+                if (FriskListSPRITE232.overlapsWith(SykListSPRITE232)) {
                     if (tilfeldigTallSyk < prosentSmitte) {
-                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE23))
-                        FriskListSPRITE23.destroy()
-                        FriskListSPRITE23 = sprites.create(img`
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE232))
+                        FriskListSPRITE232.destroy()
+                        FriskListSPRITE232 = sprites.create(img`
                             . . . . . . . . . . . . . . . . 
                             . . . . . . . . . . . . . . . . 
                             . . . . . . . . . . . . . . . . 
@@ -184,14 +284,16 @@ function Mutasjoner () {
                             . . . . . . . . . . . . . . . . 
                             . . . . . . . . . . . . . . . . 
                             `, SpriteKind.Syk)
-                        FriskListSPRITE23.setPosition(SykListSPRITE23.x, SykListSPRITE23.y)
-                        SykLIST.push(FriskListSPRITE23)
+                        FriskListSPRITE232.setPosition(SykListSPRITE232.x, SykListSPRITE232.y)
+                        SykLIST.push(FriskListSPRITE232)
                     }
                 }
             }
         }
     } else if (mutasjon == 4) {
+        // Sette sannsynlighet for å bli smittet til å være M4
         prosentSmitte = SmitteM4
+        // Sette sannsynlighet for å bli frisk av mutasjon M4
         prosentBliFrisk = FriskM4
         for (let FriskListSPRITE24 of FriskLIST) {
             for (let SykListSPRITE24 of SykLIST) {
@@ -225,7 +327,9 @@ function Mutasjoner () {
             }
         }
     } else if (mutasjon == 5) {
+        // Sette sannsynlighet for å bli smittet til å være M5
         prosentSmitte = SmitteM5
+        // Sette sannsynlighet for å bli frisk av mutasjon M5
         prosentBliFrisk = FriskM5
         for (let FriskListSPRITE25 of FriskLIST) {
             for (let SykListSPRITE25 of SykLIST) {
@@ -259,7 +363,9 @@ function Mutasjoner () {
             }
         }
     } else if (mutasjon == 6) {
+        // Sette sannsynlighet for å bli smittet til å være M6
         prosentSmitte = SmitteM6
+        // Sette sannsynlighet for å bli frisk av mutasjon M6
         prosentBliFrisk = FriskM6
         for (let FriskListSPRITE26 of FriskLIST) {
             for (let SykListSPRITE26 of SykLIST) {
@@ -294,10 +400,13 @@ function Mutasjoner () {
         }
     }
 }
+// Styrer funksjonene som legene utfører
 function Doktor () {
+    // Bestemme når vaksinen skal aktiveres
     if (Dager >= Vaksineutviklingstid && !(vaksineActive)) {
         vaksineActive = true
     }
+    // Bestemme når legene skal aktiveres
     if (Dager >= LegeDelay && !(legeAktiv)) {
         legeAktiv = true
         sisteLegeTid = game.runtime()
@@ -323,6 +432,7 @@ function Doktor () {
         L_Lege.setPosition(randint(0, ScreenWidth), randint(0, ScreenHight))
         LegeLIST.push(L_Lege)
     }
+    // Funksjon for å vaksinere friske sprites
     if (vaksineActive) {
         for (let FriskListSPRITE3 of FriskLIST) {
             for (let LegeListSPRITE2 of LegeLIST) {
@@ -336,10 +446,13 @@ function Doktor () {
             }
         }
     }
+    // Funksjon for å helbrede en syk sprite
     for (let SykListSPRITE3 of SykLIST) {
         for (let LegeListSPRITE3 of LegeLIST) {
             tilfeldigTallFrisk = randint(0, 100)
             if (SykListSPRITE3.overlapsWith(LegeListSPRITE3)) {
+                // Sjekker om pasienten kan bli frisk igjen
+                // Pasienter som ikke blir friske igjen, dør
                 if (tilfeldigTallFrisk < prosentBliFrisk) {
                     SykLIST.removeAt(SykLIST.indexOf(SykListSPRITE3))
                     SykListSPRITE3.destroy()
@@ -392,11 +505,8 @@ function Doktor () {
     }
 }
 let Dag = 0
-let antallLeger = 0
-let tilfeldigTallFrisk = 0
 let legeAktivering = false
 let sisteLegeTid = 0
-let tilfeldigTallSyk = 0
 let SmitteM6 = 0
 let FriskM6 = 0
 let SmitteM5 = 0
@@ -410,11 +520,14 @@ let FriskM2 = 0
 let SmitteM1 = 0
 let FriskM1 = 0
 let L_Lege: Sprite = null
+let tilfeldigTallFrisk = 0
+let antallLeger = 0
 let antallDøde = 0
 let antallImune = 0
 let antallSyke = 0
 let antallFriske = 0
 let mutasjon = 0
+let tilfeldigTallSyk = 0
 let F_Frisk: Sprite = null
 let vaksineActive = false
 let legeAktiv = false
@@ -423,6 +536,7 @@ let LegeLIST: Sprite[] = []
 let VaksineLIST: Sprite[] = []
 let FriskLIST: Sprite[] = []
 let SykLIST: Sprite[] = []
+let prosentImunBliSyk = 0
 let prosentBliFrisk = 0
 let prosentSmitte = 0
 let Vaksineutviklingstid = 0
@@ -434,23 +548,42 @@ let hastighetFriske = 0
 let Dager = 0
 let ScreenHight = 0
 let ScreenWidth = 0
+// Bestemme bredden på skjermen
 ScreenWidth = scene.screenWidth()
+// Bestemme høyde på skjermen
 ScreenHight = scene.screenHeight()
+// En dag er 3 sek.
 let lengdeDag = 3000
+// Oppdaterer forsøket hver 200ms.
 let update = 200
+// Forsøket starter på dag nr. 1
 Dager = 1
+// Vis at score er variabelen: Dager
 info.setScore(Dager)
+// Bestem hvor mange friske personer som skal være med i forsøket
 let lageFriskePersoner = 150
+// Hastigheten til friske sprites er +-antall ruter
 hastighetFriske = 5
+// Hastigheten til syke sprites er +-antall ruter
 hastighetSyke = 2
+// Hastigheten til vaksinerte sprites er +-antall ruter
 hastighetVaksinert = 7
+// Hastigheten til lege sprites er +-antall ruter
 hastighetLege = 10
-LegeDelay = 5
-let LegeAktiveringsInterval = 3 * lengdeDag
+// Antall dager før legene kommer for å hjelpe
+LegeDelay = 3
+// Interval mellom hver nye lege som kommer
+let LegeAktiveringsInterval = 2 * lengdeDag
+// Maks antall leger
 let maksAntallLeger = 10
+// Antall dager før vaksinen er klar
 Vaksineutviklingstid = 20
+// Sannsynlighet for å bli smittet
 prosentSmitte = 60
+// Sannsynlighet for å bli frisk igjen
 prosentBliFrisk = 95
+// Sannsynlighet for å bli syk hvis man er vaksinert
+prosentImunBliSyk = 23
 SykLIST = sprites.allOfKind(SpriteKind.Syk)
 FriskLIST = sprites.allOfKind(SpriteKind.Frisk)
 VaksineLIST = sprites.allOfKind(SpriteKind.Imun)
@@ -529,7 +662,9 @@ forever(function () {
         }
     }
     Bevegelse()
+    Sykdom()
     Mutasjoner()
+    Imunitet()
     Doktor()
     pause(update)
     antallFriske = FriskLIST.length
