@@ -28,6 +28,13 @@ function Bevegelse () {
         LegeListSPRITE.setStayInScreen(true)
     }
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (mutasjon > 6) {
+        mutasjon = 6
+    } else {
+        mutasjon += 1
+    }
+})
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     game.splash("Friske:" + antallFriske, "Syke:" + antallSyke)
     game.splash("Imune:" + antallImune, "Døde:" + antallDøde)
@@ -59,34 +66,229 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         LegeLIST.push(L_Lege)
     }
 })
-function Syke () {
-    for (let FriskListSPRITE2 of FriskLIST) {
-        for (let SykListSPRITE2 of SykLIST) {
-            tilfeldigTallSyk = randint(0, 100)
-            if (FriskListSPRITE2.overlapsWith(SykListSPRITE2)) {
-                if (tilfeldigTallSyk < prosentSmitte) {
-                    FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE2))
-                    FriskListSPRITE2.destroy()
-                    FriskListSPRITE2 = sprites.create(img`
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . 2 2 2 . . . . . . . . . . 
-                        . . . 2 2 2 . . . . . . . . . . 
-                        . . . 2 2 2 . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        . . . . . . . . . . . . . . . . 
-                        `, SpriteKind.Syk)
-                    FriskListSPRITE2.setPosition(SykListSPRITE2.x, SykListSPRITE2.y)
-                    SykLIST.push(FriskListSPRITE2)
+function SetupMutasjon () {
+    FriskM1 = 95
+    SmitteM1 = 87
+    FriskM2 = 77
+    SmitteM2 = 65
+    FriskM3 = 89
+    SmitteM3 = 88
+    FriskM4 = 98
+    SmitteM4 = 88
+    FriskM5 = 56
+    SmitteM5 = 82
+    FriskM6 = 94
+    SmitteM6 = 56
+}
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (mutasjon < 1) {
+        mutasjon = 1
+    } else {
+        mutasjon += -1
+    }
+})
+function Mutasjoner () {
+    if (mutasjon == 1) {
+        prosentSmitte = SmitteM1
+        prosentBliFrisk = FriskM1
+        for (let FriskListSPRITE2 of FriskLIST) {
+            for (let SykListSPRITE2 of SykLIST) {
+                tilfeldigTallSyk = randint(0, 100)
+                if (FriskListSPRITE2.overlapsWith(SykListSPRITE2)) {
+                    if (tilfeldigTallSyk < prosentSmitte) {
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE2))
+                        FriskListSPRITE2.destroy()
+                        FriskListSPRITE2 = sprites.create(img`
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . f 2 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            `, SpriteKind.Syk)
+                        FriskListSPRITE2.setPosition(SykListSPRITE2.x, SykListSPRITE2.y)
+                        SykLIST.push(FriskListSPRITE2)
+                    }
+                }
+            }
+        }
+    } else if (mutasjon == 2) {
+        prosentSmitte = SmitteM2
+        prosentBliFrisk = FriskM2
+        for (let FriskListSPRITE22 of FriskLIST) {
+            for (let SykListSPRITE22 of SykLIST) {
+                tilfeldigTallSyk = randint(0, 100)
+                if (FriskListSPRITE22.overlapsWith(SykListSPRITE22)) {
+                    if (tilfeldigTallSyk < prosentSmitte) {
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE22))
+                        FriskListSPRITE22.destroy()
+                        FriskListSPRITE22 = sprites.create(img`
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . 2 f 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            `, SpriteKind.Syk)
+                        FriskListSPRITE22.setPosition(SykListSPRITE22.x, SykListSPRITE22.y)
+                        SykLIST.push(FriskListSPRITE22)
+                    }
+                }
+            }
+        }
+    } else if (mutasjon == 3) {
+        prosentSmitte = SmitteM3
+        prosentBliFrisk = FriskM3
+        for (let FriskListSPRITE23 of FriskLIST) {
+            for (let SykListSPRITE23 of SykLIST) {
+                tilfeldigTallSyk = randint(0, 100)
+                if (FriskListSPRITE23.overlapsWith(SykListSPRITE23)) {
+                    if (tilfeldigTallSyk < prosentSmitte) {
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE23))
+                        FriskListSPRITE23.destroy()
+                        FriskListSPRITE23 = sprites.create(img`
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . 2 2 f . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            `, SpriteKind.Syk)
+                        FriskListSPRITE23.setPosition(SykListSPRITE23.x, SykListSPRITE23.y)
+                        SykLIST.push(FriskListSPRITE23)
+                    }
+                }
+            }
+        }
+    } else if (mutasjon == 4) {
+        prosentSmitte = SmitteM4
+        prosentBliFrisk = FriskM4
+        for (let FriskListSPRITE24 of FriskLIST) {
+            for (let SykListSPRITE24 of SykLIST) {
+                tilfeldigTallSyk = randint(0, 100)
+                if (FriskListSPRITE24.overlapsWith(SykListSPRITE24)) {
+                    if (tilfeldigTallSyk < prosentSmitte) {
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE24))
+                        FriskListSPRITE24.destroy()
+                        FriskListSPRITE24 = sprites.create(img`
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . f 2 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            `, SpriteKind.Syk)
+                        FriskListSPRITE24.setPosition(SykListSPRITE24.x, SykListSPRITE24.y)
+                        SykLIST.push(FriskListSPRITE24)
+                    }
+                }
+            }
+        }
+    } else if (mutasjon == 5) {
+        prosentSmitte = SmitteM5
+        prosentBliFrisk = FriskM5
+        for (let FriskListSPRITE25 of FriskLIST) {
+            for (let SykListSPRITE25 of SykLIST) {
+                tilfeldigTallSyk = randint(0, 100)
+                if (FriskListSPRITE25.overlapsWith(SykListSPRITE25)) {
+                    if (tilfeldigTallSyk < prosentSmitte) {
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE25))
+                        FriskListSPRITE25.destroy()
+                        FriskListSPRITE25 = sprites.create(img`
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . 2 f 2 . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            `, SpriteKind.Syk)
+                        FriskListSPRITE25.setPosition(SykListSPRITE25.x, SykListSPRITE25.y)
+                        SykLIST.push(FriskListSPRITE25)
+                    }
+                }
+            }
+        }
+    } else if (mutasjon == 6) {
+        prosentSmitte = SmitteM6
+        prosentBliFrisk = FriskM6
+        for (let FriskListSPRITE26 of FriskLIST) {
+            for (let SykListSPRITE26 of SykLIST) {
+                tilfeldigTallSyk = randint(0, 100)
+                if (FriskListSPRITE26.overlapsWith(SykListSPRITE26)) {
+                    if (tilfeldigTallSyk < prosentSmitte) {
+                        FriskLIST.removeAt(FriskLIST.indexOf(FriskListSPRITE26))
+                        FriskListSPRITE26.destroy()
+                        FriskListSPRITE26 = sprites.create(img`
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . 2 2 f . . . . . . . . . . 
+                            . . . 2 2 2 . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            . . . . . . . . . . . . . . . . 
+                            `, SpriteKind.Syk)
+                        FriskListSPRITE26.setPosition(SykListSPRITE26.x, SykListSPRITE26.y)
+                        SykLIST.push(FriskListSPRITE26)
+                    }
                 }
             }
         }
@@ -195,11 +397,24 @@ let tilfeldigTallFrisk = 0
 let legeAktivering = false
 let sisteLegeTid = 0
 let tilfeldigTallSyk = 0
+let SmitteM6 = 0
+let FriskM6 = 0
+let SmitteM5 = 0
+let FriskM5 = 0
+let SmitteM4 = 0
+let FriskM4 = 0
+let SmitteM3 = 0
+let FriskM3 = 0
+let SmitteM2 = 0
+let FriskM2 = 0
+let SmitteM1 = 0
+let FriskM1 = 0
 let L_Lege: Sprite = null
 let antallDøde = 0
 let antallImune = 0
 let antallSyke = 0
 let antallFriske = 0
+let mutasjon = 0
 let F_Frisk: Sprite = null
 let vaksineActive = false
 let legeAktiv = false
@@ -243,6 +458,7 @@ LegeLIST = sprites.allOfKind(SpriteKind.Lege)
 DødLIST = sprites.allOfKind(SpriteKind.Død)
 legeAktiv = false
 vaksineActive = false
+SetupMutasjon()
 scene.setBackgroundColor(15)
 tiles.setWallAt(tiles.getTileLocation(ScreenWidth, ScreenHight), true)
 for (let index = 0; index < lageFriskePersoner; index++) {
@@ -313,7 +529,7 @@ forever(function () {
         }
     }
     Bevegelse()
-    Syke()
+    Mutasjoner()
     Doktor()
     pause(update)
     antallFriske = FriskLIST.length
