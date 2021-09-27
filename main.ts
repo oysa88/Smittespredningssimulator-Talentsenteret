@@ -86,7 +86,7 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     game.splash("Friske:" + antallFriske, "Syke:" + antallSyke)
     game.splash("Imune:" + antallImune, "Døde:" + antallDøde)
-    game.splash("Leger:" + antallLeger)
+    game.splash("Leger:" + antallLeger, "R-tall:" + Rtall2)
 })
 // Her bestemmes hva som skjer med imune sprite
 function Imunitet () {
@@ -177,6 +177,18 @@ function SetupMutasjon () {
     FriskM6 = 94
     // Sannsynlighet for å bli smittet av mutasjon nr. 6
     SmitteM6 = 56
+}
+function Rtall () {
+    if (game.runtime() > RtallInterval + sisteRtallTid) {
+        beregneR = true
+    }
+    if (beregneR) {
+        beregneR = false
+        sisteRtallTid = game.runtime()
+        nyeSmittedeSiste3Dager = antallSyke - antallSmittede3dager
+        Rtall2 = nyeSmittedeSiste3Dager / antallSmittede3dager
+        antallSmittede3dager = antallSyke
+    }
 }
 // Endre mutasjon nr. nedover med ned-knappen
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -570,6 +582,8 @@ function Doktor () {
 let Dag = 0
 let legeAktivering = false
 let sisteLegeTid = 0
+let nyeSmittedeSiste3Dager = 0
+let beregneR = false
 let SmitteM6 = 0
 let FriskM6 = 0
 let SmitteM5 = 0
@@ -584,6 +598,7 @@ let SmitteM1 = 0
 let FriskM1 = 0
 let L_Lege: Sprite = null
 let tilfeldigTallFrisk = 0
+let Rtall2 = 0
 let antallLeger = 0
 let antallDøde = 0
 let antallImune = 0
@@ -604,6 +619,9 @@ let prosentImunBliSyk = 0
 let prosentBliFrisk = 0
 let prosentSmitte = 0
 let Vaksineutviklingstid = 0
+let antallSmittede3dager = 0
+let sisteRtallTid = 0
+let RtallInterval = 0
 let LegeDelay = 0
 let hastighetLege = 0
 let hastighetVaksinert = 0
@@ -622,7 +640,6 @@ let lengdeDag = 3000
 let update = 200
 // Forsøket starter på dag nr. 1
 Dager = 1
-// Vis at score er variabelen: Dager
 info.setScore(Dager)
 // Bestem hvor mange friske personer som skal være med i forsøket
 let lageFriskePersoner = 150
@@ -638,6 +655,10 @@ hastighetLege = 10
 LegeDelay = 3
 // Interval mellom hver nye lege som kommer
 let LegeAktiveringsInterval = 2 * lengdeDag
+// Interval mellom hver nye lege som kommer
+RtallInterval = 3 * lengdeDag
+sisteRtallTid = game.runtime()
+antallSmittede3dager = 1
 // Maks antall leger
 let maksAntallLeger = 10
 // Antall dager før vaksinen er klar
@@ -735,6 +756,7 @@ forever(function () {
     Mutasjoner()
     Imunitet()
     Doktor()
+    Rtall()
     pause(update)
     antallFriske = FriskLIST.length
     antallSyke = SykLIST.length
