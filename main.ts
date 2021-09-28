@@ -84,8 +84,11 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 // Vise oversikt over de forskjellige spritene
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    // Vise antall friske og syke
     game.splash("Friske:" + antallFriske, "Syke:" + antallSyke)
+    // Vise antall imune og døde
     game.splash("Imune:" + antallImune, "Døde:" + antallDøde)
+    // Vise antall leger og R-tallet
     game.splash("Leger:" + antallLeger, "R-tall:" + Rtall2)
 })
 // Her bestemmes hva som skjer med imune sprite
@@ -659,7 +662,10 @@ LegeDelay = 3
 let LegeAktiveringsInterval = 2 * lengdeDag
 // Interval mellom hver nye lege som kommer
 RtallInterval = 3 * lengdeDag
+// Starte timer for å kunne beregne R-tallet
+// 
 sisteRtallTid = game.runtime()
+// Sett antall smittede som vi starter med
 antallSmittede3dager = 1
 // Maks antall leger
 let maksAntallLeger = 10
@@ -681,9 +687,12 @@ LegeLIST = sprites.allOfKind(SpriteKind.Lege)
 DødLIST = sprites.allOfKind(SpriteKind.Død)
 legeAktiv = false
 vaksineActive = false
+// Kall opp funksjonen SetupMutasjon
 SetupMutasjon()
+// Sett bakgrunnsfarge på skjermen
 scene.setBackgroundColor(15)
 tiles.setWallAt(tiles.getTileLocation(ScreenWidth, ScreenHight), true)
+// Legge til friske sprite når vi starter opp simuleringen
 for (let index = 0; index < lageFriskePersoner; index++) {
     F_Frisk = sprites.create(assets.image`Frisk`, SpriteKind.Frisk)
     F_Frisk.setPosition(randint(0, ScreenWidth), randint(0, ScreenHight))
@@ -710,9 +719,11 @@ let S_Syk = sprites.create(img`
 S_Syk.setPosition(randint(0, ScreenWidth), randint(0, ScreenHight))
 SykLIST.push(S_Syk)
 forever(function () {
+    // Her settes opp intervalet mellom når en ny lege kan bli aktivert
     if (game.runtime() > LegeAktiveringsInterval + sisteLegeTid) {
         legeAktivering = true
     }
+    // Her aktiveres en ny lege under de riktige forutsetningene
     if (legeAktivering && legeAktiv && antallLeger < maksAntallLeger) {
         legeAktivering = false
         sisteLegeTid = game.runtime()
@@ -737,22 +748,23 @@ forever(function () {
         L_Lege.setPosition(randint(0, ScreenWidth), randint(0, ScreenHight))
         LegeLIST.push(L_Lege)
     }
+    // Funksjonen som teller antall dager siden utbruddet
     if (game.runtime() > Dag + lengdeDag) {
         Dag = game.runtime()
         Dager += 1
         info.setScore(Dager)
     }
-    if (Dager > 15) {
-        if (antallDøde >= 15) {
-            game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
-            game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
-            game.over(false)
-        } else if (Flokkimunitet >= 0.9 && antallDøde < 15) {
-            game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
-            game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
-            game.over(true)
-        }
+    // Sette opp betingelsene for å tape eller vinne spillet
+    if (Flokkimunitet >= 0.9 && antallDøde >= 15) {
+        game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
+        game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
+        game.over(false)
+    } else if (Flokkimunitet >= 0.9 && antallDøde < 15) {
+        game.splash("Antall Dager" + Dager, "Antall Døde" + antallDøde)
+        game.splash("Antall Friske:" + antallFriske, "Antall Imune:" + antallImune)
+        game.over(true)
     }
+    // Kaller opp de forskjellige funksjonene som styrer simulatoren
     Bevegelse()
     Sykdom()
     Mutasjoner()
@@ -765,6 +777,8 @@ forever(function () {
     antallImune = VaksineLIST.length
     antallLeger = LegeLIST.length
     antallDøde = DødLIST.length
+    // Teller antall sprite i spillet
     antallSprites = antallFriske + antallSyke + antallImune
+    // Regne ut forholdstallet mellom antall imune og alle sprites, brukes til å finne ut om man har oppnådd Flokkimunitet eller ikke
     Flokkimunitet = antallImune / antallSprites
 })
